@@ -11,8 +11,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "com.hyungrak.front",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hyungrak.front",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.945998147413-m5h18ocr60msn0dqeeuc11k5c39rgj01"
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +32,11 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "877deafd-cbfe-4f31-a1d9-210f17e3d3ef"
+      }
+    }
   }
 }
