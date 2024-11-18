@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import { GradientBackground } from '../components/GradientBackground';
-import { typography } from '../styles/typography';
 
 function LoadPage({ navigation }) {
   useEffect(() => {
@@ -17,7 +16,6 @@ function LoadPage({ navigation }) {
     <GradientBackground>
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
-          <Text style={[styles.title, typography.title]}>VOICE</Text>
           <View style={styles.logoContainer}>
             <Image 
               source={require('../assets/logov1.png')}
@@ -37,17 +35,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  title: {
-    textAlign: 'center',
-    marginTop: 100,
-  },
   logoContainer: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 70,
   },
   logo: {
-    width: 250,
-    height: 250,
+    width: 300,
+    height: 300,
   },
 });
