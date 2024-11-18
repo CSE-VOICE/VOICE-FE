@@ -115,19 +115,23 @@
 
 
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GradientBackground } from '../../components/GradientBackground';
+import { handleRecommendationResponse } from '../../redux/slices/routineSlice';
 import { typography } from '../../styles/typography';
 
 function Recommendation({ navigation, route }) {
     const { situation } = route.params;
     const { routines } = useSelector((state) => state.routine);
+    const dispatch = useDispatch();
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
+        await dispatch(handleRecommendationResponse(true));
         navigation.navigate('AiPick');
     };
 
-    const handleCancel = () => {
+    const handleCancel = async () => {
+        await dispatch(handleRecommendationResponse(false));
         navigation.navigate('AiPick');
     };
 
