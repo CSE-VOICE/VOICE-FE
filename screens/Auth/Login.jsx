@@ -1,13 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useState } from 'react';
 import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { googleLogin, login } from '../../redux/slices/authSlice';
 import authStyles from '../../styles/authStyle';
 
 WebBrowser.maybeCompleteAuthSession();
 
-// Google OAuth 설정
 const CLIENT_ID = '945998147413-m5h18ocr60msn0dqeeuc11k5c39rgj01.apps.googleusercontent.com';
 const REDIRECT_URI = AuthSession.makeRedirectUri({
   scheme: 'com.hyungrak.front'
@@ -16,8 +16,8 @@ const REDIRECT_URI = AuthSession.makeRedirectUri({
 function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
 
-  // Google 로그인 설정
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
       clientId: CLIENT_ID,
@@ -32,7 +32,6 @@ function Login({ navigation }) {
     }
   );
 
-  // 기존 이메일 로그인 처리
   const handleEmailLogin = async () => {
     if (!email || !password) {
       Alert.alert('이메일과 비밀번호를 입력해주세요.');
@@ -40,28 +39,21 @@ function Login({ navigation }) {
     }
 
     try {
-      const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
-      const user = users.find(user => user.email === email && user.password === password);
-
-      if (user) {
-        await handleLoginSuccess(user);
+      const success = await dispatch(login(email, password));
+      if (success) {
         navigation.navigate('LoadPage');
-      } else {
-        Alert.alert('로그인 실패', '이메일 또는 비밀번호가 일치하지 않습니다.');
       }
     } catch (error) {
-      Alert.alert('오류 발생', '다시 시도해주세요.');
+      Alert.alert('로그인 실패', error.message);
     }
   };
 
-  // Google 로그인 처리
   const handleGoogleLogin = async () => {
     try {
       const result = await promptAsync();
       if (result?.type === 'success') {
         const { authentication } = result;
         
-        // Google 사용자 정보 가져오기
         const userInfoResponse = await fetch(
           'https://www.googleapis.com/userinfo/v2/me',
           {
@@ -70,26 +62,11 @@ function Login({ navigation }) {
         );
         
         const googleUser = await userInfoResponse.json();
+        const success = await dispatch(googleLogin(googleUser));
         
-        // 기존 사용자 확인 또는 새 사용자 생성
-        const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
-        let user = users.find(u => u.email === googleUser.email);
-        
-        if (!user) {
-          // 새 사용자 생성
-          user = {
-            email: googleUser.email,
-            name: googleUser.name,
-            profileImage: googleUser.picture, // Google 프로필 이미지
-            authProvider: 'google',
-            socialId: googleUser.id
-          };
-          users.push(user);
-          await AsyncStorage.setItem('users', JSON.stringify(users));
+        if (success) {
+          navigation.navigate('LoadPage');
         }
-
-        await handleLoginSuccess(user);
-        navigation.navigate('LoadPage');
       }
     } catch (error) {
       Alert.alert('로그인 실패', '다시 시도해주세요.');
@@ -97,28 +74,10 @@ function Login({ navigation }) {
     }
   };
 
-  // 로그인 성공 후 공통 처리
-  const handleLoginSuccess = async (user) => {
-    await AsyncStorage.setItem('userToken', user.email);
-    await AsyncStorage.setItem('currentUser', JSON.stringify(user));
-    
-    // 사용자별 초기 데이터 생성
-    const existingAppliances = await AsyncStorage.getItem(`appliances_${user.email}`);
-    if (!existingAppliances) {
-      await AsyncStorage.setItem(`appliances_${user.email}`, JSON.stringify([]));
-    }
-
-    const existingRoutines = await AsyncStorage.getItem(`routines_${user.email}`);
-    if (!existingRoutines) {
-      await AsyncStorage.setItem(`routines_${user.email}`, JSON.stringify([]));
-    }
-  };
-
   return (
     <View style={authStyles.container}>
       <Text style={authStyles.title}>Login</Text>
       
-      {/* 이메일 로그인 폼 */}
       <TextInput
         style={authStyles.input}
         placeholder="E-mail"
@@ -136,7 +95,6 @@ function Login({ navigation }) {
         <Text style={authStyles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      {/* 구글 로그인 버튼 */}
       <TouchableOpacity 
         style={styles.googleButton}
         onPress={handleGoogleLogin}
