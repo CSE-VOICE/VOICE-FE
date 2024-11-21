@@ -78,8 +78,8 @@ function MainPage() {
 
             <View style={styles.illustrationContainer}>
               <Image 
-                source={require('../assets/backgroundimg.png')} 
-                style={styles.illustration}
+                source={require('../assets/backgroundimg2.png')} 
+                style={[styles.illustration, {transform: [{scale: 1.4}]}]}
                 resizeMode="contain"
               />
             </View>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   illustration: {
     width: '100%',
-    height: 230,
+    height: 270,
   },
 });
 
