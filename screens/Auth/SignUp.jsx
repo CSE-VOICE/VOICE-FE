@@ -1,11 +1,12 @@
-// src/screens/Auth/SignUp.jsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { signup } from '../../redux/slices/authSlice';
 import authStyles from '../../styles/authStyle';
 
 function SignUp({ navigation }) {
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
+  const dispatch = useDispatch();
 
   const handleInputChange = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -13,26 +14,38 @@ function SignUp({ navigation }) {
 
   const handleSignUp = async () => {
     if (!form.name || !form.email || !form.password || !form.phone) {
-      Alert.alert('모든 필드를 입력해주세요.');
+      Alert.alert('입력 오류', '모든 필드를 입력해주세요.');
       return;
     }
-
+  
     try {
-      const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
-      const userExists = users.some(user => user.email === form.email);
-
-      if (userExists) {
-        Alert.alert('이미 가입된 이메일입니다.');
-        return;
+      console.log('회원가입 시도:', form);
+      const success = await dispatch(signup(form));
+      console.log('회원가입 결과:', success);
+      
+      if (success) {
+        Alert.alert(
+          '회원가입 성공',
+          '로그인 페이지로 이동합니다.',
+          [
+            {
+              text: '확인',
+              onPress: () => {
+                setTimeout(() => {
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                  });
+                }, 100);
+              }
+            }
+          ],
+          { cancelable: false }
+        );
       }
-
-      users.push(form);
-      await AsyncStorage.setItem('users', JSON.stringify(users));
-
-      Alert.alert('회원가입이 완료되었습니다.', '로그인 페이지로 이동합니다.');
-      navigation.navigate('Login');
     } catch (error) {
-      Alert.alert('오류 발생', '다시 시도해주세요.');
+      console.error('회원가입 처리 중 오류:', error);
+      Alert.alert('회원가입 실패', '잠시 후 다시 시도해주세요.');
     }
   };
 
@@ -53,7 +66,7 @@ function SignUp({ navigation }) {
       />
       <TextInput
         style={authStyles.input}
-        placeholder="password"
+        placeholder="Password"
         secureTextEntry
         onChangeText={(value) => handleInputChange('password', value)}
       />
@@ -75,4 +88,3 @@ function SignUp({ navigation }) {
 }
 
 export default SignUp;
-

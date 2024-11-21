@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit';
+import { api } from '../../src/api/config';
 
 const initialState = {
-  user: null, // 현재 로그인한 사용자 정보
-  isAuthenticated: false, // 인증 여부
-  loading: false, // 로딩 상태
-  error: null, // 오류 메시지
+  user: null,
+  isAuthenticated: false,
+  loading: false,
+  error: null,
 };
 
 const authSlice = createSlice({
@@ -38,7 +39,6 @@ const authSlice = createSlice({
 
 export const { setLoading, setError, loginSuccess, logoutSuccess, updateUserInfo } = authSlice.actions;
 
-// 비동기 액션 생성자
 export const loadUser = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
@@ -59,19 +59,45 @@ export const loadUser = () => async (dispatch) => {
 export const login = (email, password) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
-    const user = users.find((u) => u.email === email && u.password === password);
-    if (user) {
-      await AsyncStorage.setItem('currentUser', JSON.stringify(user));
-      await AsyncStorage.setItem('userToken', user.email); // 간단한 토큰 저장
-      dispatch(loginSuccess(user));
-      return true;
-    } else {
-      dispatch(setError('이메일 또는 비밀번호가 일치하지 않습니다.'));
-      return false;
-    }
+    const data = await api('/auth/login', 'POST', {
+      email,
+      pwd: password,
+      login_type: 'local'
+    });
+    
+    await AsyncStorage.setItem('currentUser', JSON.stringify(data));
+    await AsyncStorage.setItem('userToken', data.email);
+    dispatch(loginSuccess(data));
+    return true;
   } catch (error) {
-    dispatch(setError('로그인 중 오류가 발생했습니다.'));
+    dispatch(setError(error.message));
+    return false;
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const signup = (userData) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await api('/auth/signup', 'POST', {
+      email: userData.email,
+      pwd: userData.password,
+      phone: userData.phone,
+      name: userData.name,
+      login_type: 'local'
+    });
+
+    console.log('회원가입 응답:', response);
+    
+    // 응답이 있으면 성공으로 처리
+    if (response) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('회원가입 에러:', error);
+    dispatch(setError(error?.message || '회원가입 중 오류가 발생했습니다.'));
     return false;
   } finally {
     dispatch(setLoading(false));
@@ -81,23 +107,15 @@ export const login = (email, password) => async (dispatch) => {
 export const googleLogin = (googleUser) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
-    let user = users.find((u) => u.email === googleUser.email);
-    if (!user) {
-      user = {
-        email: googleUser.email,
-        name: googleUser.name,
-        profileImage: googleUser.picture,
-        authProvider: 'google',
-        socialId: googleUser.id,
-      };
-      users.push(user);
-      await AsyncStorage.setItem('users', JSON.stringify(users));
-    }
+    const data = await api('/auth/login-sns', 'POST', {
+      email: googleUser.email,
+      name: googleUser.name,
+      login_type: 'google',
+    });
 
-    await AsyncStorage.setItem('currentUser', JSON.stringify(user));
-    await AsyncStorage.setItem('userToken', user.email);
-    dispatch(loginSuccess(user));
+    await AsyncStorage.setItem('currentUser', JSON.stringify(data));
+    await AsyncStorage.setItem('userToken', data.email);
+    dispatch(loginSuccess(data));
     return true;
   } catch (error) {
     dispatch(setError('Google 로그인 중 오류가 발생했습니다.'));
@@ -114,35 +132,6 @@ export const logout = () => async (dispatch) => {
     dispatch(logoutSuccess());
   } catch (error) {
     dispatch(setError('로그아웃 중 오류가 발생했습니다.'));
-  }
-};
-
-export const updatePassword = (currentPassword, newPassword) => async (dispatch, getState) => {
-  dispatch(setLoading(true));
-  try {
-    const { user } = getState().auth;
-    const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
-    const userIndex = users.findIndex((u) => u.email === user.email);
-
-    if (userIndex === -1) {
-      throw new Error('사용자를 찾을 수 없습니다.');
-    }
-
-    if (users[userIndex].password !== currentPassword) {
-      throw new Error('현재 비밀번호가 일치하지 않습니다.');
-    }
-
-    users[userIndex].password = newPassword;
-    await AsyncStorage.setItem('users', JSON.stringify(users));
-
-    const updatedUser = { ...user, password: newPassword };
-    await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUser));
-
-    dispatch(updateUserInfo({ password: newPassword }));
-  } catch (error) {
-    dispatch(setError(error.message));
-  } finally {
-    dispatch(setLoading(false));
   }
 };
 

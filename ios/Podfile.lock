@@ -95,11 +95,6 @@ PODS:
     - fmt (= 9.1.0)
     - glog
     - RCT-Folly/Default (= 2024.01.01.00)
-  - RCT-Folly/Default (2024.01.01.00):
-    - boost
-    - DoubleConversion
-    - fmt (= 9.1.0)
-    - glog
   - RCT-Folly/Fabric (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1282,18 +1277,18 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - "EXApplication (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-application/ios`)"
-  - "EXConstants (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-constants/ios`)"
-  - "Expo (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo`)"
-  - "ExpoAsset (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-asset/ios`)"
-  - "ExpoCrypto (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-crypto/ios`)"
-  - "ExpoFileSystem (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-file-system/ios`)"
-  - "ExpoFont (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-font/ios`)"
-  - "ExpoKeepAwake (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-keep-awake/ios`)"
-  - "ExpoLinearGradient (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-linear-gradient/ios`)"
-  - "ExpoModulesCore (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-modules-core`)"
-  - "ExpoWebBrowser (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-web-browser/ios`)"
-  - "EXSplashScreen (from `../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-splash-screen/ios`)"
+  - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXConstants (from `../node_modules/expo-constants/ios`)
+  - Expo (from `../node_modules/expo`)
+  - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
+  - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
+  - ExpoFont (from `../node_modules/expo-font/ios`)
+  - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
+  - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
+  - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -1369,29 +1364,29 @@ EXTERNAL SOURCES:
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-application/ios"
+    :path: "../node_modules/expo-application/ios"
   EXConstants:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-constants/ios"
+    :path: "../node_modules/expo-constants/ios"
   Expo:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo"
+    :path: "../node_modules/expo"
   ExpoAsset:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-asset/ios"
+    :path: "../node_modules/expo-asset/ios"
   ExpoCrypto:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-crypto/ios"
+    :path: "../node_modules/expo-crypto/ios"
   ExpoFileSystem:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-file-system/ios"
+    :path: "../node_modules/expo-file-system/ios"
   ExpoFont:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-font/ios"
+    :path: "../node_modules/expo-font/ios"
   ExpoKeepAwake:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-keep-awake/ios"
+    :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-linear-gradient/ios"
+    :path: "../node_modules/expo-linear-gradient/ios"
   ExpoModulesCore:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-modules-core"
+    :path: "../node_modules/expo-modules-core"
   ExpoWebBrowser:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-web-browser/ios"
+    :path: "../node_modules/expo-web-browser/ios"
   EXSplashScreen:
-    :path: "../../../../../../한양대학교/3-2/소프트웨어공학/팀 프로젝트/front/node_modules/expo-splash-screen/ios"
+    :path: "../node_modules/expo-splash-screen/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   fmt:
@@ -1513,7 +1508,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
-  DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
+  DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   EXApplication: c08200c34daca7af7fd76ac4b9d606077410e8ad
   EXConstants: 409690fbfd5afea964e5e9d6c4eb2c2b59222c59
   Expo: 9b6666ef2fedcfc89c5b9be2aa1ce12b81f9e7f5
@@ -1527,14 +1522,14 @@ SPEC CHECKSUMS:
   ExpoWebBrowser: 7595ccac6938eb65b076385fd23d035db9ecdc8e
   EXSplashScreen: 37b33bf0d0366c30a62d2b46758261e0d43cef66
   FBLazyVector: ac12dc084d1c8ec4cc4d7b3cf1b0ebda6dab85af
-  fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
-  glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
+  fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
+  glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: 8c1577f3fdb849cbe7729c2e7b5abc4b845e88f8
   kakao-login: 6f7a39583ae9e1a4e76240e66ae3ec575d461d1e
   KakaoSDKAuth: 569b377eda622d93d4575240b8031cd658163eef
   KakaoSDKCommon: d57127c339fc79e73aa8b236a4c77211c29924f1
   KakaoSDKUser: 043bcd7e91454ebf3bf64f150c430e6f65f0a08d
-  RCT-Folly: 02617c592a293bd6d418e0a88ff4ee1f88329b47
+  RCT-Folly: bf5c0376ffe4dd2cf438dcf86db385df9fdce648
   RCTDeprecation: 3afceddffa65aee666dafd6f0116f1d975db1584
   RCTRequired: ec1239bc9d8bf63e10fb92bd8b26171a9258e0c1
   RCTTypeSafety: f5ecbc86c5c5fa163c05acb7a1c5012e15b5f994
