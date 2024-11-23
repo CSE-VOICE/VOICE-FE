@@ -27,7 +27,7 @@ const authStyles = StyleSheet.create({
     width: '100%',
     height: 48,
     borderRadius: 8,
-    backgroundColor: '#000080',
+    backgroundColor: '#0F172A',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 12,
