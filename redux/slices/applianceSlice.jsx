@@ -120,6 +120,7 @@ export const loadAppliances = () => async (dispatch) => {
   }
 };
 
+
 // 개별 기기 상태 조회도 수정
 export const getApplianceStatus = (applianceId) => async (dispatch) => {
   dispatch(setLoading(true));
@@ -160,6 +161,32 @@ export const updateAppliances = (updates) => async (dispatch) => {
   } finally {
     dispatch(setLoading(false));
   }
+};
+
+// 전원 제어 액션
+export const toggleAppliancePower = (applianceId, power) => async (dispatch) => {
+    dispatch(setLoading(true));
+    try {
+        const userId = 6;
+        const response = await api(`/appliances/${applianceId}?userId=${userId}`, 'PATCH', {
+            power: power 
+        });
+
+        if (response.data) {
+            // 변경된 기기의 상태만 업데이트
+            dispatch(updateApplianceState({
+                id: applianceId,
+                onoff: response.data.onoff,
+                state: response.data.state,
+                is_active: response.data.is_active
+            }));
+        }
+    } catch (error) {
+        console.error('Toggle power error:', error);
+        dispatch(setError('기기 전원 제어에 실패했습니다.'));
+    } finally {
+        dispatch(setLoading(false));
+    }
 };
 
 export default applianceSlice.reducer;

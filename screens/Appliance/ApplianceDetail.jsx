@@ -2,16 +2,16 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { GradientBackground } from '../../components/GradientBackground';
-import { updateAppliances } from '../../redux/slices/applianceSlice';
+import { toggleAppliancePower, updateAppliances } from '../../redux/slices/applianceSlice';
 import { typography } from '../../styles/typography';
 
 function ApplianceDetail({ route, navigation }) {
@@ -44,15 +44,7 @@ function ApplianceDetail({ route, navigation }) {
         const newStatus = !isOn;
         setIsOn(newStatus);
         
-        dispatch(updateAppliances({
-            updates: [{
-                applianceId: currentAppliance.id,
-                onoff: newStatus ? 'on' : 'off',
-                state: newStatus ? '작동중' : '대기',
-                isActive: true,
-                userId: 6
-            }]
-        }));
+        dispatch(toggleAppliancePower(currentAppliance.id, newStatus ? 'on' : 'off'));
     };
 
     const getApplianceIcon = (name) => {

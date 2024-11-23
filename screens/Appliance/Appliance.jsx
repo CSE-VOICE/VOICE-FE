@@ -1,5 +1,6 @@
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useEffect } from 'react';
 import {
     ActivityIndicator,
     Dimensions,
@@ -25,6 +26,11 @@ function Appliance({ navigation }) {
         dispatch(loadAppliances());
     }, [dispatch]);
     
+    useFocusEffect(
+        useCallback(() => {
+            dispatch(loadAppliances());
+        }, [dispatch])
+    );
 
     const handleAddAppliance = () => {
         console.log("추후 기기 추가 기능이 구현될 예정입니다.");
