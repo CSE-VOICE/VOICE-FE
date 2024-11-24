@@ -1,6 +1,8 @@
 import Foundation
 import NuguClientKit
 import NuguLoginKit
+import NuguCore
+import NuguAgents
 import AVFoundation
 
 @objc(NuguBridge)
@@ -14,29 +16,27 @@ class NuguBridge: NSObject {
         return false
     }
     
-    @objc(initialize:withRejecter:)
-    func initialize(_ resolve: @escaping RCTPromiseResolveBlock,
-                rejecter reject: @escaping RCTPromiseRejectBlock) {
-        // 마이크 권한 체크를 비동기로 수행
+    @objc func initialize(_ resolve: @escaping RCTPromiseResolveBlock,
+                         rejecter reject: @escaping RCTPromiseRejectBlock) {
         AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
             guard let self = self else { return }
             
             if granted {
                 do {
                     print("🎤 NUGU SDK 초기화 시작")
-                    let capability = NuguCapability(category: .basicPlayer, version: "1.0")
-                    let clientBuilder = NuguClient.Builder()
-                        .audioConfiguration(AudioConfiguration())
-                        .capability(capability)
                     
-                    nuguClient = try clientBuilder.build()
+                    // NuguClient 설정
+                    let clientBuilder = NuguClient.Builder()
+                    
+                    // NUGU 클라이언트 생성
+                    nuguClient = clientBuilder.build()
                     print("✅ NUGU SDK 초기화 성공")
                     
                     try audioSessionManager.setCategory(.playAndRecord, mode: .default)
                     resolve(nil)
                 } catch {
-                    print("❌ NUGU SDK 초기화 실패: \(error.localizedDescription)")
-                    reject("INIT_ERROR", "Failed to initialize NUGU SDK: \(error.localizedDescription)", error)
+                    print("❌ NUGU SDK 초기화 실패: \(error)")
+                    reject("INIT_ERROR", "Failed to initialize NUGU SDK: \(error)", error)
                 }
             } else {
                 print("❌ 마이크 권한이 거부됨")
@@ -44,12 +44,10 @@ class NuguBridge: NSObject {
             }
         }
     }
-
-    @objc(startRecording:withRejecter:)
-    func startRecording(_ resolve: @escaping RCTPromiseResolveBlock,
-                    rejecter reject: @escaping RCTPromiseRejectBlock) {
+    
+    @objc func startRecording(_ resolve: @escaping RCTPromiseResolveBlock,
+                             rejecter reject: @escaping RCTPromiseRejectBlock) {
         guard let client = nuguClient else {
-            print("❌ NUGU Client가 초기화되지 않음")
             reject("NO_CLIENT", "NUGU Client is not initialized", nil)
             return
         }
@@ -58,54 +56,49 @@ class NuguBridge: NSObject {
             print("🎤 녹음 시작")
             try audioSessionManager.setActive(true)
             
-            // 녹음 파일 경로 설정
             let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
             currentRecordingPath = (documentsPath as NSString).appendingPathComponent("recording_\(Date().timeIntervalSince1970).m4a")
             
-            client.asrAgent.startRecognition { result in
-                switch result {
-                case .success:
-                    print("✅ 녹음 시작 성공: \(self.currentRecordingPath ?? "")")
-                    resolve(nil)
-                case .failure(let error):
-                    print("❌ 녹음 시작 실패: \(error.localizedDescription)")
-                    reject("RECORDING_ERROR", "Failed to start recording: \(error.localizedDescription)", error)
+            client.asrAgent.startRecognition(
+                initiator: .tap,
+                completion: { state in
+                    switch state {
+                    case .prepared:
+                        print("✅ 음성인식 준비 완료")
+                        resolve(nil)
+                    case .error(let error):
+                        print("❌ 음성인식 시작 실패: \(error)")
+                        reject("RECORDING_ERROR", "Failed to start recording: \(error)", error)
+                    default:
+                        break
+                    }
                 }
-            }
+            )
         } catch {
-            print("❌ 오디오 세션 활성화 실패: \(error.localizedDescription)")
-            reject("RECORDING_ERROR", "Failed to activate audio session: \(error.localizedDescription)", error)
+            print("❌ 오디오 세션 활성화 실패: \(error)")
+            reject("RECORDING_ERROR", "Failed to activate audio session: \(error)", error)
         }
     }
     
-    @objc(stopRecording:withRejecter:)
-    func stopRecording(_ resolve: @escaping RCTPromiseResolveBlock,
-                      rejecter reject: @escaping RCTPromiseRejectBlock) {
+    @objc func stopRecording(_ resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) {
         guard let client = nuguClient else {
             reject("NO_CLIENT", "NUGU Client is not initialized", nil)
             return
         }
         
-        client.asrAgent.stopRecognition { result in
-            switch result {
-            case .success(let text):
-                print("✅ 녹음 중지 성공")
-                // 녹음 파일 경로와 STT 결과를 함께 반환
-                let response: [String: Any] = [
-                    "audioPath": self.currentRecordingPath ?? "",
-                    "sttResult": text ?? ""
-                ]
-                resolve(response)
-            case .failure(let error):
-                print("❌ 녹음 중지 실패: \(error.localizedDescription)")
-                reject("RECORDING_ERROR", "Failed to stop recording: \(error.localizedDescription)", error)
-            }
-        }
+        client.asrAgent.stopRecognition()
+        
+        let response: [String: Any] = [
+            "audioPath": currentRecordingPath ?? "",
+            "sttResult": ""
+        ]
+        resolve(response)
         
         do {
             try audioSessionManager.setActive(false)
         } catch {
-            print("Warning: Failed to deactivate audio session: \(error.localizedDescription)")
+            print("Warning: Failed to deactivate audio session: \(error)")
         }
     }
 }
