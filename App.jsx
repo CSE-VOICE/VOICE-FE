@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider } from 'react-redux'; //!!!!!
 import { GradientBackground } from './components/GradientBackground';
 import store from './redux/store'; // !!!!!
@@ -127,6 +128,7 @@ export default function App() {
   return (
     //!!!!!!! Provider
     <Provider store={store}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <GradientBackground>
       <NavigationContainer>
         <Stack.Navigator 
@@ -148,6 +150,7 @@ export default function App() {
       </NavigationContainer>
       <StatusBar style="auto" />
     </GradientBackground>
+    </GestureHandlerRootView>
     </Provider>
   );
 }

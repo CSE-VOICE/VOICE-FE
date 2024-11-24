@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OAuthServerUrl</key>
+	<string>https://api.sktnugu.com</string>
+	
+	<key>OAuthClientId</key>
+	<string>4958fc4b-accc-4b75-95a8-377fb210b58c</string>
+	
+	<key>OAuthClientSecret</key>
+	<string>6cf5e352-6ae5-4f80-9553-eccc9da07caf</string>
+	
+	<key>OAuthRedirectUri</key>
+	<string></string>
+	
+	<key>PoCId</key>
+	<string>trial.common.sdk</string>
+	
+	<key>DeviceTypeCode</key>
+	<string>TRIAL_COMMON_SDK</string>
+</dict>
+</plist>
