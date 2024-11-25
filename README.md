@@ -53,5 +53,5 @@ Speech-to-Intent, Multimodal, Smart Home, Personalization, Generative AI
   "react-native-screens": "^3.31.1",
   "react-native-svg": "^15.2.0",
   "react-native-gesture-handler": "~2.16.1"
-}
+}```
 
