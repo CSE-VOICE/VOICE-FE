@@ -11,11 +11,11 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '13.4'
 install! 'cocoapods',
   :deterministic_uuids => false
 
+prepare_react_native_project!
+
 # React Native과 NUGU SDK 호환성을 위한 전역 설정
 $RNFirebaseAsStaticFramework = true
 $static_framework = true
-
-prepare_react_native_project!
 
 target 'front' do
   use_expo_modules!
@@ -26,61 +26,42 @@ target 'front' do
   # NUGU SDK pods
   pod 'NuguClientKit'
   pod 'NuguLoginKit'
+  pod 'NuguCore'
+  pod 'NuguAgents'
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
 
   use_react_native!(
     :path => config[:reactNativePath],
-    :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
-    :app_path => "#{Pod::Config.instance.installation_root}/..",
-    :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false'
+    :hermes_enabled => podfile_properties['expo.jsEngine'] == 'hermes',
+    :fabric_enabled => flags[:fabric_enabled],
+    # :flipper_configuration => FlipperConfiguration.enabled,
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   post_install do |installer|
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true'
+      :mac_catalyst_enabled => false
     )
-
-    # Pod 설정 일괄 수정
+    
+    # iOS 배포 타겟을 포드 타겟에 맞게 설정
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-        # 공통 설정
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+        config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.4'
-        config.build_settings['SWIFT_VERSION'] = '5.0'
-        config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
         
         # Xcode 15 관련 설정
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
         
-        # Framework 관련 설정
-        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-        
-        # React-RCTAppDelegate 특별 설정
-        if target.name == 'React-RCTAppDelegate'
-          config.build_settings['DEFINES_MODULE'] = 'YES'
-          config.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
-          config.build_settings['OTHER_CFLAGS'] = '$(inherited) -DRN_FABRIC_ENABLED'
-        end
-
-        # RCT-Folly 특별 설정
-        if target.name == 'RCT-Folly'
-          config.build_settings['HEADER_SEARCH_PATHS'] ||= '$(inherited)'
-          config.build_settings['HEADER_SEARCH_PATHS'] << ' ${PODS_ROOT}/Headers/Public/React-hermes'
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = ['$(inherited)', 'FOLLY_MOBILE=1', 'FOLLY_NO_CONFIG', 'FOLLY_HAVE_CLOCK_GETTIME=1']
-        end
+        # M1 Mac 관련 설정
+        config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
       end
     end
-
-    # 리소스 번들 코드 서명 비활성화
-    installer.target_installation_results.pod_target_installation_results
-      .each do |pod_name, target_installation_result|
-        target_installation_result.resource_bundle_targets.each do |resource_bundle_target|
-          resource_bundle_target.build_configurations.each do |config|
-            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
-          end
-        end
-      end
   end
 
   post_integrate do |installer|
