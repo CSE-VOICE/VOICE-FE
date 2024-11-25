@@ -17,22 +17,22 @@ This project aims to create smart home systems using an intuitive user interface
 Speech-to-Intent, Multimodal, Smart Home, Personalization, Generative AI
 
 ## 📦 Packages
-### Navigation
+### ```Navigation
 ```{
   "@react-navigation/bottom-tabs": "^6.6.1",
   "@react-navigation/native": "^6.1.18",
   "@react-navigation/native-stack": "^6.11.0",
   "@react-navigation/stack": "^6.4.1"
-}```
+}
 ### 🎯 Core & State Management
-```{
+{
   "react": "18.2.0",
   "react-native": "0.74.5",
   "@reduxjs/toolkit": "^2.3.0",
   "react-redux": "^9.1.2"
-}```
+}
 ### 📱 Expo SDK & Tools
-```{
+{
   "expo": "~51.0.28",
   "expo-auth-session": "~5.5.2",
   "expo-crypto": "~13.0.2",
@@ -44,14 +44,14 @@ Speech-to-Intent, Multimodal, Smart Home, Personalization, Generative AI
   "expo-dev-client": "~4.0.29",
   "expo-constants": "~16.0.2",
   "expo-build-properties": "~0.12.5"
-}```
+}
 ### 🛠 UI & Utilities
-```{
+{
   "@react-native-async-storage/async-storage": "^2.0.0",
   "@react-native-community/datetimepicker": "^8.2.0",
   "react-native-safe-area-context": "^4.14.0",
   "react-native-screens": "^3.31.1",
   "react-native-svg": "^15.2.0",
   "react-native-gesture-handler": "~2.16.1"
-}```
+}
 
