@@ -12,7 +12,7 @@
 	<string>6cf5e352-6ae5-4f80-9553-eccc9da07caf</string>
 	
 	<key>OAuthRedirectUri</key>
-	<string></string>
+	<string>nugu.user.4958fc4b-accc-4b75-95a8-377fb210b58c://auth</string>
 	
 	<key>PoCId</key>
 	<string>trial.common.sdk</string>

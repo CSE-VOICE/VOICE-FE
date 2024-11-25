@@ -23,7 +23,7 @@
 //   }
 // };
 
-export const API_BASE_URL = 'http://localhost:3000';
+export const API_BASE_URL = 'http://172.30.1.51:3000';
 
 export const api = async (endpoint, method = 'GET', data = null) => {
   try {

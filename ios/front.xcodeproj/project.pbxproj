@@ -16,6 +16,7 @@
 		A5CE67DEE6824D6CB3F77150 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03A494B64884EA6A0740DDF /* noop-file.swift */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		D242610B2CF4320C006136B7 /* NuguConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D242610A2CF4320C006136B7 /* NuguConfiguration.swift */; };
 		D2871A272CF3582C00D8D451 /* NuguBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = D2871A252CF3582B00D8D451 /* NuguBridge.m */; };
 		D2871A282CF3582C00D8D451 /* NuguBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2871A262CF3582B00D8D451 /* NuguBridge.swift */; };
 /* End PBXBuildFile section */
@@ -33,6 +34,7 @@
 		AA681A27881445E1856CA836 /* front-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "front-Bridging-Header.h"; path = "front/front-Bridging-Header.h"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		D03A494B64884EA6A0740DDF /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "front/noop-file.swift"; sourceTree = "<group>"; };
+		D242610A2CF4320C006136B7 /* NuguConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NuguConfiguration.swift; path = front/NuguConfiguration.swift; sourceTree = "<group>"; };
 		D2871A252CF3582B00D8D451 /* NuguBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NuguBridge.m; path = front/NuguBridge.m; sourceTree = "<group>"; };
 		D2871A262CF3582B00D8D451 /* NuguBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NuguBridge.swift; path = front/NuguBridge.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -89,6 +91,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				D242610A2CF4320C006136B7 /* NuguConfiguration.swift */,
 				D2871A252CF3582B00D8D451 /* NuguBridge.m */,
 				D2871A262CF3582B00D8D451 /* NuguBridge.swift */,
 				13B07FAE1A68108700A75B9A /* front */,
@@ -429,6 +432,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D242610B2CF4320C006136B7 /* NuguConfiguration.swift in Sources */,
 				D2871A272CF3582C00D8D451 /* NuguBridge.m in Sources */,
 				D2871A282CF3582C00D8D451 /* NuguBridge.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
@@ -449,6 +453,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = front/front.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L8JV58YKSB;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -485,6 +490,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = front/front.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L8JV58YKSB;
 				INFOPLIST_FILE = front/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -577,10 +583,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -649,10 +652,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
