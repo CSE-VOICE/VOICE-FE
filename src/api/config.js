@@ -1,29 +1,4 @@
-// // src/api/config.js
-// export const API_BASE_URL = 'http://localhost:3000';
-
-// export const api = async (endpoint, method = 'GET', data = null) => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-//       method,
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: data ? JSON.stringify(data) : null,
-//     });
-    
-//     const result = await response.json();
-    
-//     if (!result.success) {
-//       throw new Error(result.error.message);
-//     }
-    
-//     return result.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
-export const API_BASE_URL = 'http://172.30.1.51:3000';
+export const API_BASE_URL = 'http://192.168.45.236:3000';
 
 export const api = async (endpoint, method = 'GET', data = null) => {
   try {

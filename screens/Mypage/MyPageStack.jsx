@@ -4,6 +4,7 @@ import MyPage from './MyPage';
 import MyPageAI from './MyPageAI';
 import MyPageInfo from './MyPageInfo';
 import MyPageRoutine from './MyPageRoutine';
+import MyPageRoutineDetail from './MyPageRoutineDetail';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,16 @@ function MyPageStack() {
             <Stack.Screen 
                 name="MyPageRoutine" 
                 component={MyPageRoutine}
+                options={{
+                    headerShown: true,
+                    headerTransparent: true,
+                    headerTintColor: '#666666',
+                    title: ' '
+                }}
+            />
+            <Stack.Screen 
+                name="MyPageRoutineDetail" 
+                component={MyPageRoutineDetail}
                 options={{
                     headerShown: true,
                     headerTransparent: true,
