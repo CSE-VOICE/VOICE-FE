@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider } from 'react-redux'; //!!!!!
 import { GradientBackground } from './components/GradientBackground';
@@ -17,6 +18,7 @@ import SignUp from './screens/Auth/SignUp';
 import LoadPage from './screens/LoadPage';
 import MainPage from './screens/MainPage';
 import MyPageStack from './screens/Mypage/MyPageStack';
+LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered']);
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();

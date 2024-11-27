@@ -48,58 +48,6 @@ export const {
     updateApplianceState,
 } = applianceSlice.actions;
 
-
-// // Async action creators
-// export const loadAppliances = () => async (dispatch, getState) => {
-//   dispatch(setLoading(true));
-//   try {
-//     const userId = getState().auth.user?.id;
-//     if (!userId) throw new Error('사용자 정보가 없습니다.');
-    
-//     const response = await api(`/appliances?userId=${userId}`, 'GET');
-//     dispatch(setAppliances(response.data.appliances));
-//   } catch (error) {
-//     dispatch(setError('기기 목록을 불러오는데 실패했습니다.'));
-//     console.error('Load appliances error:', error);
-//   } finally {
-//     dispatch(setLoading(false));
-//   }
-// };
-
-// export const getApplianceStatus = (applianceId) => async (dispatch, getState) => {
-//   dispatch(setLoading(true));
-//   try {
-//     const userId = getState().auth.user?.id;
-//     if (!userId) throw new Error('사용자 정보가 없습니다.');
-
-//     const response = await api(`/appliances/${applianceId}?userId=${userId}`, 'GET');
-//     dispatch(updateApplianceState(response.data));
-//     return response.data;
-//   } catch (error) {
-//     dispatch(setError('기기 상태 조회에 실패했습니다.'));
-//     console.error('Get appliance status error:', error);
-//   } finally {
-//     dispatch(setLoading(false));
-//   }
-// };
-
-// export const updateAppliances = (updates) => async (dispatch) => {
-//   dispatch(setLoading(true));
-//   try {
-//     const response = await api('/appliances', 'PATCH', { updates });
-//     response.data.forEach(updatedAppliance => {
-//       dispatch(updateApplianceState(updatedAppliance));
-//     });
-//     return response.data;
-//   } catch (error) {
-//     dispatch(setError('기기 상태 변경에 실패했습니다.'));
-//     console.error('Update appliances error:', error);
-//   } finally {
-//     dispatch(setLoading(false));
-//   }
-// };
-
-
 export const loadAppliances = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
