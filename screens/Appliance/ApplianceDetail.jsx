@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
@@ -17,7 +18,17 @@ function ApplianceDetail({ route, navigation }) {
     const { appliance: initialAppliance } = route.params;
     const dispatch = useDispatch();
     const { loading } = useSelector(state => state.appliance);
-    
+    const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+        // AsyncStorage에서 userId 가져오기
+        const getUserId = async () => {
+            const storedUserId = await AsyncStorage.getItem('userId');
+            setUserId(storedUserId);
+        };
+        getUserId();
+    }, []);
+
     // 현재 기기의 최신 상태 가져오기
     const currentAppliance = useSelector(state => 
         state.appliance.appliances.find(a => a.id === initialAppliance.id)
@@ -70,7 +81,7 @@ function ApplianceDetail({ route, navigation }) {
                 onoff: isOn ? 'on' : 'off',
                 state: newState,
                 isActive: true,
-                userId: 6
+                userId: userId
             }]
         }));
     };
