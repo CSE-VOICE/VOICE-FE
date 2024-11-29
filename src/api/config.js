@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://192.168.45.236:3000';
+export const API_BASE_URL = 'http://172.16.162.242:3000';
 
 export const api = async (endpoint, method = 'GET', data = null) => {
   try {

@@ -1,115 +1,9 @@
-// import { MaterialCommunityIcons } from '@expo/vector-icons';
-// import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// import { GradientBackground } from '../../components/GradientBackground';
-// import { typography } from '../../styles/typography';
-
-// function MyPageAI() {
-//     return (
-//         <GradientBackground>
-//             <SafeAreaView style={styles.container}>
-//                 <View style={styles.container}>
-//                     <Text style={[styles.title, typography.title]}>AI 스피커</Text>
-//                     <View style={styles.contentContainer}>
-//                         <View style={styles.card}>
-//                             <TouchableOpacity style={styles.speakerButton}>
-//                                 <Text style={styles.buttonTitle}>AI 스피커 찾기</Text>
-//                                 <Text style={styles.buttonDesc}>스피커를 검색중입니다...</Text>
-//                             </TouchableOpacity>
-
-//                             <TouchableOpacity style={styles.wifiButton}>
-//                                 <View style={styles.wifiContent}>
-//                                     <MaterialCommunityIcons name="wifi" size={24} color="#333" />
-//                                     <Text style={styles.wifiText}>Wi-Fi 연결</Text>
-//                                 </View>
-//                                 <TouchableOpacity style={styles.connectButton}>
-//                                     <Text style={styles.connectText}>연결하기</Text>
-//                                 </TouchableOpacity>
-//                             </TouchableOpacity>
-//                         </View>
-//                     </View>
-//                 </View>
-//             </SafeAreaView>
-//         </GradientBackground>
-//     );
-// }
-
-// export default MyPageAI;
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//     },
-//     title: {
-//         textAlign: 'center',
-//         marginTop: 60,
-//         marginBottom: 20,
-//     },
-//     contentContainer: {
-//         flex: 1,
-//         paddingHorizontal: 20,
-//     },
-//     card: {
-//         backgroundColor: 'white',
-//         borderRadius: 15,
-//         padding: 20,
-//         shadowColor: '#000',
-//         shadowOffset: {
-//             width: 0,
-//             height: 2,
-//         },
-//         shadowOpacity: 0.25,
-//         shadowRadius: 3.84,
-//         elevation: 5,
-//         gap: 15,
-//     },
-//     speakerButton: {
-//         backgroundColor: '#0F172A',
-//         padding: 15,
-//         borderRadius: 8,
-//     },
-//     buttonTitle: {
-//         fontSize: 16,
-//         fontWeight: 'bold',
-//         color: 'white',
-//         marginBottom: 5,
-//     },
-//     buttonDesc: {
-//         fontSize: 14,
-//         color: '#E0E0E0',
-//     },
-//     wifiButton: {
-//         borderWidth: 1,
-//         borderColor: '#E0E0E0',
-//         borderRadius: 8,
-//         padding: 15,
-//     },
-//     wifiContent: {
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         gap: 10,
-//         marginBottom: 10,
-//     },
-//     wifiText: {
-//         fontSize: 16,
-//         color: '#333',
-//     },
-//     connectButton: {
-//         backgroundColor: '#E8E8E8',
-//         padding: 8,
-//         borderRadius: 4,
-//         alignSelf: 'flex-start',
-//     },
-//     connectText: {
-//         fontSize: 14,
-//         color: '#333',
-//     },
-// });
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { GradientBackground } from '../../components/GradientBackground';
-import { clearSpeakerState, connectSpeaker, searchSpeaker } from '../../redux/slices/speakerSlice';
+import { clearSpeakerState, connectSpeaker, initializeNugu } from '../../redux/slices/speakerSlice';
 import { typography } from '../../styles/typography';
 
 function MyPageAI() {
@@ -117,20 +11,25 @@ function MyPageAI() {
   const { speaker, loading, error } = useSelector((state) => state.speaker);
 
   useEffect(() => {
-    // 초기 상태 정리
-    dispatch(clearSpeakerState());
+    // NUGU SDK 초기화만 하고 스피커 연결은 하지 않음
+    dispatch(initializeNugu())
+      .unwrap()
+      .catch((error) => {
+        Alert.alert('초기화 실패', error);
+      });
+
+    return () => {
+      dispatch(clearSpeakerState());
+    };
   }, [dispatch]);
 
-  const handleSearchSpeaker = () => {
-    dispatch(searchSpeaker());
-  };
-
-  const handleConnectSpeaker = () => {
-    if (!speaker) {
-      Alert.alert('스피커가 없습니다.', '먼저 스피커를 검색해주세요.');
-      return;
+  const handleConnectSpeaker = async () => {
+    try {
+      await dispatch(connectSpeaker()).unwrap();
+      Alert.alert('연결 성공', '스피커가 성공적으로 연결되었습니다.');
+    } catch (error) {
+      Alert.alert('연결 실패', '스피커 연결에 실패했습니다.');
     }
-    dispatch(connectSpeaker({ speakerId: speaker.id }));
   };
 
   return (
@@ -140,36 +39,52 @@ function MyPageAI() {
           <Text style={[styles.title, typography.title]}>AI 스피커</Text>
           <View style={styles.contentContainer}>
             <View style={styles.card}>
-              <TouchableOpacity
-                style={styles.speakerButton}
-                onPress={handleSearchSpeaker}
-                disabled={loading}
-              >
-                <Text style={styles.buttonTitle}>
-                  {loading ? '스피커를 검색 중...' : 'AI 스피커 찾기'}
+              <View style={styles.speakerInfo}>
+                <Text style={styles.speakerTitle}>등록된 스피커</Text>
+                <Text style={styles.speakerName}>{speaker.name}</Text>
+                <Text style={[
+                  styles.speakerStatus, 
+                  speaker.connected ? styles.statusConnected : styles.statusDisconnected
+                ]}>
+                  {speaker.connected ? '연결됨' : '연결 안됨'}
                 </Text>
-                <Text style={styles.buttonDesc}>
-                  {speaker ? `스피커: ${speaker.name}` : '스피커를 검색하세요.'}
-                </Text>
-              </TouchableOpacity>
+              </View>
 
               <TouchableOpacity
-                style={styles.wifiButton}
+                style={[
+                  styles.connectButton, 
+                  loading && styles.buttonDisabled,
+                  speaker.connected && styles.buttonConnected
+                ]}
                 onPress={handleConnectSpeaker}
-                disabled={loading || !speaker}
+                disabled={loading || speaker.connected}
               >
-                <View style={styles.wifiContent}>
-                  <MaterialCommunityIcons name="wifi" size={24} color="#333" />
-                  <Text style={styles.wifiText}>
-                    {loading ? '연결 중...' : 'Wi-Fi 연결'}
-                  </Text>
-                </View>
-                <TouchableOpacity style={styles.connectButton}>
-                  <Text style={styles.connectText}>연결하기</Text>
-                </TouchableOpacity>
+                <MaterialCommunityIcons 
+                  name="wifi" 
+                  size={24} 
+                  color={speaker.connected ? "#4CAF50" : "white"} 
+                />
+                <Text style={[
+                  styles.connectText, 
+                  speaker.connected && styles.connectedText
+                ]}>
+                  {loading ? '연결 중...' : speaker.connected ? '연결됨' : '스피커 연결하기'}
+                </Text>
               </TouchableOpacity>
 
-              {error && <Text style={styles.errorText}>{error}</Text>}
+              {error && (
+                <View style={styles.errorContainer}>
+                  <MaterialCommunityIcons name="alert-circle" size={20} color="#DC3545" />
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              )}
+
+              <View style={styles.infoContainer}>
+                <MaterialCommunityIcons name="information" size={20} color="#666" />
+                <Text style={styles.infoText}>
+                  스피커가 연결되면 "아리야~" 명령어로 호출할 수 있습니다.
+                </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -178,12 +93,19 @@ function MyPageAI() {
   );
 }
 
-export default MyPageAI;
-
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  title: { textAlign: 'center', marginTop: 60, marginBottom: 20 },
-  contentContainer: { flex: 1, paddingHorizontal: 20 },
+  container: { 
+    flex: 1 
+  },
+  title: { 
+    textAlign: 'center', 
+    marginTop: 60, 
+    marginBottom: 20 
+  },
+  contentContainer: { 
+    flex: 1, 
+    paddingHorizontal: 20 
+  },
   card: {
     backgroundColor: 'white',
     borderRadius: 15,
@@ -195,13 +117,80 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  speakerButton: { backgroundColor: '#0F172A', padding: 15, borderRadius: 8 },
-  buttonTitle: { fontSize: 16, fontWeight: 'bold', color: 'white', marginBottom: 5 },
-  buttonDesc: { fontSize: 14, color: '#E0E0E0' },
-  wifiButton: { borderWidth: 1, borderColor: '#E0E0E0', borderRadius: 8, padding: 15 },
-  wifiContent: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 },
-  wifiText: { fontSize: 16, color: '#333' },
-  connectButton: { backgroundColor: '#E8E8E8', padding: 8, borderRadius: 4, alignSelf: 'flex-start' },
-  connectText: { fontSize: 14, color: '#333' },
-  errorText: { color: 'red', marginTop: 10 },
+  speakerInfo: {
+    padding: 15,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+  },
+  speakerTitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+  speakerName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  speakerStatus: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  statusConnected: {
+    color: '#4CAF50',
+  },
+  statusDisconnected: {
+    color: '#666',
+  },
+  connectButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#0F172A',
+    padding: 15,
+    borderRadius: 8,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonConnected: {
+    backgroundColor: '#E8F5E9',
+  },
+  connectText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  connectedText: {
+    color: '#4CAF50',
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#FFF3F3',
+    padding: 12,
+    borderRadius: 6,
+  },
+  errorText: {
+    color: '#DC3545',
+    flex: 1,
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#F8F9FA',
+    padding: 12,
+    borderRadius: 6,
+  },
+  infoText: {
+    color: '#666',
+    flex: 1,
+    fontSize: 14,
+  },
 });
+
+export default MyPageAI;
