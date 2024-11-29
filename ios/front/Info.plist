@@ -37,12 +37,6 @@
           <string>exp+front</string>
         </array>
       </dict>
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>nugu.user.4958fc4b-accc-4b75-95a8-377fb210b58c</string>
-        </array>
-      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>

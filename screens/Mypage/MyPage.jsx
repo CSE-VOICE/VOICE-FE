@@ -76,7 +76,7 @@ function MyPage({ navigation }) {
                                 style={styles.menuCard}
                                 onPress={() => navigation.navigate('MyPageAI')}
                             >
-                                <MaterialCommunityIcons name="robot" size={24} color="#666666" />
+                                <MaterialCommunityIcons name="speaker-wireless" size={24} color="#666666" />
                                 <Text style={styles.menuText}>AI 스피커</Text>
                             </TouchableOpacity>
 

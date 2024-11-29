@@ -2,68 +2,77 @@ require File.join(File.dirname(`node --print "require.resolve('expo/package.json
 require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
 require 'json'
 
+# Podfile.properties.json 로드
 podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties.json'))) rescue {}
 
+# 환경 변수 설정
 ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 
+# iOS 플랫폼 설정
 platform :ios, podfile_properties['ios.deploymentTarget'] || '13.4'
-install! 'cocoapods',
-  :deterministic_uuids => false
+install! 'cocoapods', :deterministic_uuids => false
 
+# React Native 프로젝트 준비
 prepare_react_native_project!
 
-# React Native과 NUGU SDK 호환성을 위한 전역 설정
+# React Native와 NUGU SDK 호환성을 위한 전역 설정
 $RNFirebaseAsStaticFramework = true
 $static_framework = true
 
+# 메인 타겟 정의
 target 'front' do
+  # Expo 모듈 사용
   use_expo_modules!
   config = use_native_modules!
 
+  # Static Frameworks 설정
   use_frameworks! :linkage => :static
 
-  # NUGU SDK pods
+  # NUGU SDK Pods 추가
   pod 'NuguClientKit'
   pod 'NuguLoginKit'
   pod 'NuguCore'
   pod 'NuguAgents'
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
+  # React Native 설정
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == 'hermes',
-    :fabric_enabled => flags[:fabric_enabled],
-    # :flipper_configuration => FlipperConfiguration.enabled,
-    # An absolute path to your application root.
+    :fabric_enabled => podfile_properties['newArchEnabled'] == 'true',
+    # 앱의 루트 경로 지정
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # 빌드 후 처리
   post_install do |installer|
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false
-    )
-    
-    # iOS 배포 타겟을 포드 타겟에 맞게 설정
+    # React Native 기본 설정 적용
+    react_native_post_install(installer, config[:reactNativePath])
+
+    # iOS 빌드 설정 조정
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-        config.build_settings['ENABLE_BITCODE'] = 'NO'
-        config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+        # iOS 최소 배포 타겟 설정
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.4'
-        
+
+        # Bitcode 비활성화
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+
         # Xcode 15 관련 설정
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
-        
-        # M1 Mac 관련 설정
+
+        # M1 및 시뮬레이터 관련 설정
         config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+        config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+
+        config.build_settings['HEADER_SEARCH_PATHS'] ||= '$(inherited) '
+        config.build_settings['HEADER_SEARCH_PATHS'] += '$(SRCROOT)/../../node_modules/react-native/React/** '
+        config.build_settings['HEADER_SEARCH_PATHS'] += '$(SRCROOT)/../../node_modules/react-native/React/Base/** '
       end
     end
   end
 
+  # 통합 후 처리
   post_integrate do |installer|
     begin
       expo_patch_react_imports!(installer)
