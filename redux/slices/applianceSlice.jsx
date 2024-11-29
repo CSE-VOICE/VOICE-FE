@@ -73,8 +73,7 @@ export const loadAppliances = () => async (dispatch) => {
 export const getApplianceStatus = (applianceId) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const userId = 6; // 임시로 하드코딩
-    const response = await api(`/appliances/${applianceId}?userId=${userId}`, 'GET');
+    const response = await api(`/appliances/${applianceId}?userId=6`, 'GET');
     if (response.data) {
       dispatch(updateApplianceState(response.data));
     }
@@ -88,10 +87,9 @@ export const getApplianceStatus = (applianceId) => async (dispatch) => {
 };
 
 // 상태 업데이트도 수정
-export const updateAppliances = (updates) => async (dispatch) => {
+export const updateAppliances = (updates, userId) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const userId = 6; // 임시로 하드코딩
     const response = await api('/appliances', 'PATCH', {
       updates,
       userId
@@ -115,8 +113,7 @@ export const updateAppliances = (updates) => async (dispatch) => {
 export const toggleAppliancePower = (applianceId, power) => async (dispatch) => {
     dispatch(setLoading(true));
     try {
-        const userId = 6;
-        const response = await api(`/appliances/${applianceId}?userId=${userId}`, 'PATCH', {
+        const response = await api(`/appliances/${applianceId}?userId=6`, 'PATCH', {
             power: power 
         });
 

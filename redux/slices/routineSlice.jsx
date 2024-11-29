@@ -115,7 +115,6 @@ export const acceptRecommendation = () => async (dispatch, getState) => {
     }
 
     const response = await api('/ai-pick/recommend/accept?userId=6', 'POST', {
-      userId: '6',
       routine: currentRecommendation.routine,
       updates: currentRecommendation.updates
     });
@@ -139,9 +138,7 @@ export const acceptRecommendation = () => async (dispatch, getState) => {
 export const rejectRecommendation = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await api('/ai-pick/recommend/reject?userId=6', 'POST', {
-      userId: '6'
-    });
+    const response = await api('/ai-pick/recommend/reject?userId=6', 'POST');
     
     dispatch(clearCurrentRecommendation());
     return response;

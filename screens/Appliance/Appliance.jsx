@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     addCardText: {
-        fontSize: 16,
+        fontSize: 15,
         color: '#666666',
         marginBottom: 15,
         textAlign: 'center',
